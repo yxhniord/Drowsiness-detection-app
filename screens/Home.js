@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Button, Text } from "react-native";
 import * as tf from "@tensorflow/tfjs";
-import { bundleResourceIO, decodeJpeg } from "@tensorflow/tfjs-react-native";
-import * as FileSystem from "expo-file-system";
+import { bundleResourceIO } from "@tensorflow/tfjs-react-native";
 
 const Home = () => {
-  const [detector, setDetector] = useState();
+  const [model, setModel] = useState();
   const [res, setRes] = useState();
   useEffect(() => {
     async function loadModel() {
@@ -13,16 +12,14 @@ const Home = () => {
       // Wait for tensorflow module to be ready
       const tfReady = await tf.ready();
       console.log("[+] Loading custom mask detection model");
-      // Replce model.json and group1-shard.bin with your own custom model
       const modelJson = require("../assets/models/model.json");
       const modelWeight = require("../assets/models/group1-shard1of1.bin");
-      const detect = await tf
+      const model = await tf
         .loadLayersModel(bundleResourceIO(modelJson, modelWeight))
         .catch((e) => {
           console.log("[LOADING ERROR] info:", e);
         });
-      // Assign model to variable
-      setDetector(detect);
+      setModel(model);
       console.log("[+] Model Loaded");
     }
     loadModel();
