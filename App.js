@@ -15,11 +15,24 @@ export default function App() {
   const cameraRef = useRef(null);
   const [model, setModel] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [drowsiness, setDrowsiness] = useState("None");
 
-  function argMax(array) {
-    return array
-      .map((x, i) => [x, i])
-      .reduce((r, a) => (a[0] > r[0] ? a : r))[1];
+  function argMax(arr) {
+    if (arr.length === 0) {
+      return -1;
+    }
+
+    var max = arr[0];
+    var maxIndex = 0;
+
+    for (var i = 1; i < arr.length; i++) {
+      if (arr[i] > max) {
+        maxIndex = i;
+        max = arr[i];
+      }
+    }
+
+    return maxIndex;
   }
 
   const labels = ["yawn", "no_yawn", "Closed", "Open"];
@@ -66,7 +79,8 @@ export default function App() {
         .predict(nextImageTensor.reshape([1, 145, 145, 3]))
         .data()
         .then((prediction) => {
-          console.log("[+] Predition:", prediction);
+          const result = labels[argMax(prediction)];
+          setDrowsiness(result);
         })
         .catch((error) => {
           console.log("[LOADING ERROR] info:", error);
@@ -95,6 +109,7 @@ export default function App() {
           useCustomShadersToResize={false}
         />
       )}
+      <Text>{drowsiness}</Text>
       <Button onPress={handleFlip} title="flip" />
     </View>
   );
