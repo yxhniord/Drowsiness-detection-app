@@ -1,11 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { StyleSheet, View, Button, Text } from "react-native";
 import * as tf from "@tensorflow/tfjs";
 import { bundleResourceIO } from "@tensorflow/tfjs-react-native";
+import { Camera, CameraType } from "expo-camera";
+// import * as MediaLibrary from 'expo-media-library';
 
 const Home = () => {
   const [model, setModel] = useState();
   const [res, setRes] = useState();
+
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);
+  const [image, setImage] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
+  const cameraRef = useRef(null);
+
   useEffect(() => {
     async function loadModel() {
       console.log("[+] Application started");
@@ -24,6 +33,13 @@ const Home = () => {
     }
     loadModel();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const cameraStatus = await Camera.requestCameraPermissionsAsync();
+      setHasCameraPermission(cameraStatus === 'granted');
+    })();
+  }, [])
 
   function handlePredictButtonClick() {
     if (detector) {
@@ -44,10 +60,17 @@ const Home = () => {
 
   return (
     <View>
-      <Button onPress={handlePredictButtonClick} title="Detect" />
-      {res ? <Text>{res}</Text> : <Text>No result</Text>}
+      {/* <Button onPress={handlePredictButtonClick} title="Detect" />
+      {res ? <Text>{res}</Text> : <Text>No result</Text>} */}
     </View>
   );
 };
 
 export default Home;
+
+const styles = StyleSheet.create({
+  camera: {
+    flex: 1,
+    borderRadius: 20,
+  }
+})
