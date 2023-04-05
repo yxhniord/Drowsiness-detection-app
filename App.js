@@ -14,6 +14,15 @@ export default function App() {
   const [type, setType] = useState(Camera.Constants.Type.front);
   const cameraRef = useRef(null);
   const [model, setModel] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+
+  function argMax(array) {
+    return array
+      .map((x, i) => [x, i])
+      .reduce((r, a) => (a[0] > r[0] ? a : r))[1];
+  }
+
+  const labels = ["yawn", "no_yawn", "Closed", "Open"];
 
   useEffect(() => {
     (async () => {
@@ -29,6 +38,7 @@ export default function App() {
         });
       setModel(model);
       console.log("[+] Model Loaded");
+      setIsLoading(false);
     })();
   }, []);
 
@@ -47,43 +57,44 @@ export default function App() {
 
   function handleCameraStream(images) {
     const loop = async () => {
-      if (model) {
-        const nextImageTensor = images.next().value;
-        if (!model || !nextImageTensor) {
-          console.log("[LOADING ERROR] info: no model or image");
-          return;
-        }
-        model
-          .predict(nextImageTensor.reshape([1, 145, 145, 3]))
-          .data()
-          .then((prediction) => {
-            console.log("[+] Predition:", prediction);
-          })
-          .catch((error) => {
-            console.log("[LOADING ERROR] info:", error);
-          });
-        requestAnimationFrame(loop);
+      const nextImageTensor = images.next().value;
+      if (!nextImageTensor) {
+        console.log("[LOADING ERROR] info: no model or image...");
+        return;
       }
+      model
+        .predict(nextImageTensor.reshape([1, 145, 145, 3]))
+        .data()
+        .then((prediction) => {
+          console.log("[+] Predition:", prediction);
+        })
+        .catch((error) => {
+          console.log("[LOADING ERROR] info:", error);
+        });
+      requestAnimationFrame(loop);
     };
     loop();
   }
 
   return (
     <View style={styles.container}>
-      <TensorCamera
-        style={styles.camera}
-        type={type}
-        ref={cameraRef}
-        cameraTextureHeight={texture.height}
-        cameraTextureWidth={texture.width}
-        resizeHeight={145}
-        resizeWidth={145}
-        resizeDepth={3}
-        onReady={handleCameraStream}
-        autorender={true}
-        useCustomShadersToResize={false}
-      />
-      {/* <Camera style={styles.camera} type={type} ref={cameraRef}/> */}
+      {isLoading ? (
+        <Text>Loading Model...</Text>
+      ) : (
+        <TensorCamera
+          style={styles.camera}
+          type={type}
+          ref={cameraRef}
+          cameraTextureHeight={texture.height}
+          cameraTextureWidth={texture.width}
+          resizeHeight={145}
+          resizeWidth={145}
+          resizeDepth={3}
+          onReady={handleCameraStream}
+          autorender={true}
+          useCustomShadersToResize={false}
+        />
+      )}
       <Button onPress={handleFlip} title="flip" />
     </View>
   );
