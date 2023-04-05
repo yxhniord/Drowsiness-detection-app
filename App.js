@@ -44,20 +44,26 @@ export default function App() {
     Platform.OS == "ios"
       ? { height: 1920, width: 1080 }
       : { height: 1200, width: 1600 };
-  
+
   function handleCameraStream(images) {
     const loop = async () => {
-      const nextImageTensor = images.next().value;
-      if (!model || !nextImageTensor) {
-        console.log("[LOADING ERROR] info: no model or image");
-        return;
+      if (model) {
+        const nextImageTensor = images.next().value;
+        if (!model || !nextImageTensor) {
+          console.log("[LOADING ERROR] info: no model or image");
+          return;
+        }
+        model
+          .predict(nextImageTensor.reshape([1, 145, 145, 3]))
+          .data()
+          .then((prediction) => {
+            console.log("[+] Predition:", prediction);
+          })
+          .catch((error) => {
+            console.log("[LOADING ERROR] info:", error);
+          });
+        requestAnimationFrame(loop);
       }
-      model.predict(nextImageTensor.reshape([1, 145, 145, 3])).data().then((prediction) => {
-        console.log("[+] Predition:", prediction);
-      }).catch((error) => {
-        console.log("[LOADING ERROR] info:", error);
-      });
-      requestAnimationFrame(loop);
     };
     loop();
   }
