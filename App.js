@@ -93,11 +93,10 @@ export default function App() {
   }
 
   const handleFacesDetected = (faces) => {
-    console.log(faces);
+    faces = faces.faces;
     if (faces.length > 0) {
       const { leftEyeOpenProbability } = faces[0];
       setLeftEyeOpenProb(leftEyeOpenProbability);
-      console.log(leftEyeOpenProb);
     } else {
       setLeftEyeOpenProb(null);
     }
@@ -108,8 +107,7 @@ export default function App() {
       {isLoading ? (
         <Text>Loading Model...</Text>
       ) : (
-        <Camera
-          // other props
+        <TensorCamera
           style={styles.camera}
           type={type}
           ref={cameraRef}
@@ -121,20 +119,15 @@ export default function App() {
             minDetectionInterval: 100,
             tracking: true,
           }}
+          cameraTextureHeight={texture.height}
+          cameraTextureWidth={texture.width}
+          resizeHeight={145}
+          resizeWidth={145}
+          resizeDepth={3}
+          onReady={handleCameraStream}
+          autorender={true}
+          useCustomShadersToResize={false}
         />
-        // <TensorCamera
-        //   style={styles.camera}
-        //   type={type}
-        //   ref={cameraRef}
-        //   cameraTextureHeight={texture.height}
-        //   cameraTextureWidth={texture.width}
-        //   resizeHeight={145}
-        //   resizeWidth={145}
-        //   resizeDepth={3}
-        //   onReady={handleCameraStream}
-        //   autorender={true}
-        //   useCustomShadersToResize={false}
-        // />
       )}
       <Text>{leftEyeOpenProb}</Text>
       <Button onPress={handleFlip} title="flip" />
