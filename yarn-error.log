@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarnpkg add expo-media-library@~14.2.0
+  /usr/local/bin/node /usr/local/bin/yarn add expo-face-detector
 
 PATH: 
-  /Users/jasper/Drowsiness-detection-app/node_modules/.bin:/Users/jasper/node_modules/.bin:/Users/node_modules/.bin:/node_modules/.bin:/usr/local/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/Users/jasper/Drowsiness-detection-app/node_modules/.bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin
+  /opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin
 
 Yarn version: 
   1.22.19
@@ -14,7 +14,7 @@ Platform:
   darwin arm64
 
 Trace: 
-  Error: EACCES: permission denied, mkdir '/Users/jasper/Drowsiness-detection-app/node_modules/expo-media-library/ios/EXMediaLibrary.xcframework'
+  Error: EACCES: permission denied, unlink '/Users/jasper/Drowsiness-detection-app/node_modules/expo-media-library/app.plugin.js'
 
 npm manifest: 
   {
@@ -37,6 +37,7 @@ npm manifest:
       "expo-file-system": "^14.1.0",
       "expo-gl": "^11.4.0",
       "expo-gl-cpp": "^11.4.0",
+      "expo-media-library": "^15.2.3",
       "expo-status-bar": "~1.4.4",
       "react": "18.0.0",
       "react-native": "0.69.3",

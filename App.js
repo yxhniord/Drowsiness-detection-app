@@ -2,6 +2,7 @@ import { StyleSheet, View, Button, Text, Platform } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import React, { useEffect, useState, useRef } from "react";
 import * as tf from "@tensorflow/tfjs";
+import * as FaceDetector from "expo-face-detector";
 import {
   bundleResourceIO,
   cameraWithTensors,
@@ -16,6 +17,7 @@ export default function App() {
   const [model, setModel] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [drowsiness, setDrowsiness] = useState("None");
+  const [leftEyeOpenProb, setLeftEyeOpenProb] = useState(null);
 
   function argMax(arr) {
     if (arr.length === 0) {
@@ -90,26 +92,51 @@ export default function App() {
     loop();
   }
 
+  const handleFacesDetected = (faces) => {
+    console.log(faces);
+    if (faces.length > 0) {
+      const { leftEyeOpenProbability } = faces[0];
+      setLeftEyeOpenProb(leftEyeOpenProbability);
+      console.log(leftEyeOpenProb);
+    } else {
+      setLeftEyeOpenProb(null);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {isLoading ? (
         <Text>Loading Model...</Text>
       ) : (
-        <TensorCamera
+        <Camera
+          // other props
           style={styles.camera}
           type={type}
           ref={cameraRef}
-          cameraTextureHeight={texture.height}
-          cameraTextureWidth={texture.width}
-          resizeHeight={145}
-          resizeWidth={145}
-          resizeDepth={3}
-          onReady={handleCameraStream}
-          autorender={true}
-          useCustomShadersToResize={false}
+          onFacesDetected={handleFacesDetected}
+          faceDetectorSettings={{
+            mode: FaceDetector.FaceDetectorMode.fast,
+            detectLandmarks: FaceDetector.FaceDetectorLandmarks.none,
+            runClassifications: FaceDetector.FaceDetectorClassifications.all,
+            minDetectionInterval: 100,
+            tracking: true,
+          }}
         />
+        // <TensorCamera
+        //   style={styles.camera}
+        //   type={type}
+        //   ref={cameraRef}
+        //   cameraTextureHeight={texture.height}
+        //   cameraTextureWidth={texture.width}
+        //   resizeHeight={145}
+        //   resizeWidth={145}
+        //   resizeDepth={3}
+        //   onReady={handleCameraStream}
+        //   autorender={true}
+        //   useCustomShadersToResize={false}
+        // />
       )}
-      <Text>{drowsiness}</Text>
+      <Text>{leftEyeOpenProb}</Text>
       <Button onPress={handleFlip} title="flip" />
     </View>
   );
