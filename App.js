@@ -18,6 +18,8 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [drowsiness, setDrowsiness] = useState("None");
   const [leftEyeOpenProb, setLeftEyeOpenProb] = useState(null);
+  const [rightEyeOpenProb, setRightEyeOpenProb] = useState(null);
+  const [faceBounds,setFaceBounds] = useState();
 
   function argMax(arr) {
     if (arr.length === 0) {
@@ -65,10 +67,7 @@ export default function App() {
     }
   }
 
-  const texture =
-    Platform.OS == "ios"
-      ? { height: 1920, width: 1080 }
-      : { height: 1200, width: 1600 };
+  const texture = Platform.OS == "ios" ? { height: 1920, width: 1080 } : { height: 1200, width: 1600 };
 
   function handleCameraStream(images) {
     const loop = async () => {
@@ -93,12 +92,16 @@ export default function App() {
   }
 
   const handleFacesDetected = (faces) => {
-    faces = faces.faces;
-    if (faces.length > 0) {
-      const { leftEyeOpenProbability } = faces[0];
-      setLeftEyeOpenProb(leftEyeOpenProbability);
+    const face=faces.faces[0];
+    if (face) {
+      const { leftEyeOpenProbability, rightEyeOpenProbability, bounds } = face;
+      setLeftEyeOpenProb(leftEyeOpenProbability ?? null);
+      setRightEyeOpenProb(rightEyeOpenProbability ?? null);
+      setFaceBounds(bounds ?? null);
     } else {
       setLeftEyeOpenProb(null);
+      setRightEyeOpenProb(null);
+      setFaceBounds(null);
     }
   };
 
@@ -129,7 +132,9 @@ export default function App() {
           useCustomShadersToResize={false}
         />
       )}
-      <Text>{leftEyeOpenProb}</Text>
+      <Text>Left Eye Open Probability: {leftEyeOpenProb}</Text>
+      <Text>Right Eye Open Probability: {rightEyeOpenProb}</Text>
+      <Text>Face Bounds: Origin: {faceBounds?.origin?.x}, {faceBounds?.origin?.y}, Size: {faceBounds?.size?.width}, {faceBounds?.size?.height}</Text>
       <Button onPress={handleFlip} title="flip" />
     </View>
   );
