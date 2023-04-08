@@ -17,9 +17,8 @@ export default function App() {
   const [model, setModel] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [drowsiness, setDrowsiness] = useState("None");
-  const [leftEyeOpenProb, setLeftEyeOpenProb] = useState(null);
-  const [rightEyeOpenProb, setRightEyeOpenProb] = useState(null);
-  const [faceBounds,setFaceBounds] = useState();
+  const faceRef = useRef();
+
 
   function argMax(arr) {
     if (arr.length === 0) {
@@ -76,6 +75,17 @@ export default function App() {
         console.log("[LOADING ERROR] info: no model or image...");
         return;
       }
+      if (!faceRef.current || !faceRef.current.bounds || !faceRef.current.leftEyeOpenProbability) {
+        console.log('faceRef.current:', faceRef.current);
+        requestAnimationFrame(loop);
+        return;
+      }
+      const { x, y } = faceRef.current.bounds.origin;
+      const { width, height } = faceRef.current.bounds.size;
+      const { leftEyeOpenProbability, rightEyeOpenProbability } = faceRef.current;
+      console.log('bounds: ', faceRef.current.bounds);
+      console.log('LeftEyeOpenProbability: ', faceRef.current.leftEyeOpenProbability);
+      console.log('RightEyeOpenProbability: ', faceRef.current.rightEyeOpenProbability);
       model
         .predict(nextImageTensor.reshape([1, 145, 145, 3]))
         .data()
@@ -94,14 +104,9 @@ export default function App() {
   const handleFacesDetected = (faces) => {
     const face=faces.faces[0];
     if (face) {
-      const { leftEyeOpenProbability, rightEyeOpenProbability, bounds } = face;
-      setLeftEyeOpenProb(leftEyeOpenProbability ?? null);
-      setRightEyeOpenProb(rightEyeOpenProbability ?? null);
-      setFaceBounds(bounds ?? null);
+      faceRef.current = face ?? null;
     } else {
-      setLeftEyeOpenProb(null);
-      setRightEyeOpenProb(null);
-      setFaceBounds(null);
+      faceRef.current = null;
     }
   };
 
@@ -132,9 +137,7 @@ export default function App() {
           useCustomShadersToResize={false}
         />
       )}
-      <Text>Left Eye Open Probability: {leftEyeOpenProb}</Text>
-      <Text>Right Eye Open Probability: {rightEyeOpenProb}</Text>
-      <Text>Face Bounds: Origin: {faceBounds?.origin?.x}, {faceBounds?.origin?.y}, Size: {faceBounds?.size?.width}, {faceBounds?.size?.height}</Text>
+      <Text>Drowsiness: {drowsiness}</Text>
       <Button onPress={handleFlip} title="flip" />
     </View>
   );
