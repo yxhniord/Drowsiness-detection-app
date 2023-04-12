@@ -19,7 +19,6 @@ export default function App() {
   const [drowsiness, setDrowsiness] = useState("None");
   const faceRef = useRef();
 
-
   function argMax(arr) {
     if (arr.length === 0) {
       return -1;
@@ -38,15 +37,15 @@ export default function App() {
     return maxIndex;
   }
 
-  const labels = ["yawn", "no_yawn", "Closed", "Open"];
+  const labels = ["yawn", "no_yawn"];
 
   useEffect(() => {
     (async () => {
       await Camera.requestCameraPermissionsAsync();
       await tf.ready();
       console.log("[+] Loading custom mask detection model");
-      const modelJson = require("./assets/models/model.json");
-      const modelWeight = require("./assets/models/group1-shard1of1.bin");
+      const modelJson = require("./assets/models_new/model.json");
+      const modelWeight = require("./assets/models_new/weights.bin");
       const model = await tf
         .loadLayersModel(bundleResourceIO(modelJson, modelWeight))
         .catch((e) => {
@@ -66,7 +65,10 @@ export default function App() {
     }
   }
 
-  const texture = Platform.OS == "ios" ? { height: 1920, width: 1080 } : { height: 1200, width: 1600 };
+  const texture =
+    Platform.OS == "ios"
+      ? { height: 1920, width: 1080 }
+      : { height: 1200, width: 1600 };
 
   function handleCameraStream(images) {
     const loop = async () => {
@@ -75,21 +77,33 @@ export default function App() {
         console.log("[LOADING ERROR] info: no model or image...");
         return;
       }
-      if (!faceRef.current || !faceRef.current.bounds || !faceRef.current.leftEyeOpenProbability) {
-        console.log('faceRef.current:', faceRef.current);
+      if (
+        !faceRef.current ||
+        !faceRef.current.bounds ||
+        !faceRef.current.leftEyeOpenProbability
+      ) {
+        // console.log("faceRef.current:", faceRef.current);
         requestAnimationFrame(loop);
         return;
       }
       const { x, y } = faceRef.current.bounds.origin;
       const { width, height } = faceRef.current.bounds.size;
-      const { leftEyeOpenProbability, rightEyeOpenProbability } = faceRef.current;
-      console.log('bounds: ', faceRef.current.bounds);
-      console.log('LeftEyeOpenProbability: ', faceRef.current.leftEyeOpenProbability);
-      console.log('RightEyeOpenProbability: ', faceRef.current.rightEyeOpenProbability);
+      const { leftEyeOpenProbability, rightEyeOpenProbability } =
+        faceRef.current;
+      // console.log("bounds: ", faceRef.current.bounds);
+      // console.log(
+      //   "LeftEyeOpenProbability: ",
+      //   faceRef.current.leftEyeOpenProbability
+      // );
+      // console.log(
+      //   "RightEyeOpenProbability: ",
+      //   faceRef.current.rightEyeOpenProbability
+      // );
       model
-        .predict(nextImageTensor.reshape([1, 145, 145, 3]))
+        .predict(nextImageTensor.reshape([-1, 224, 224, 3]))
         .data()
         .then((prediction) => {
+          console.log(prediction);
           const result = labels[argMax(prediction)];
           setDrowsiness(result);
         })
@@ -102,7 +116,7 @@ export default function App() {
   }
 
   const handleFacesDetected = (faces) => {
-    const face=faces.faces[0];
+    const face = faces.faces[0];
     if (face) {
       faceRef.current = face ?? null;
     } else {
@@ -129,8 +143,8 @@ export default function App() {
           }}
           cameraTextureHeight={texture.height}
           cameraTextureWidth={texture.width}
-          resizeHeight={145}
-          resizeWidth={145}
+          resizeHeight={224}
+          resizeWidth={224}
           resizeDepth={3}
           onReady={handleCameraStream}
           autorender={true}
