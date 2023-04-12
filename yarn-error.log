@@ -1,20 +1,30 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn add expo-face-detector
+  /Users/niordmac/.nvm/versions/node/v14.17.3/bin/node /Users/niordmac/.yarn/bin/yarn.js add @tensorflow/tfjs-core, @tensorflow/tfjs-converter
 
 PATH: 
-  /opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin
+  /Users/niordmac/.yarn/bin:/Users/niordmac/.config/yarn/global/node_modules/.bin:/Users/niordmac/.nvm/versions/node/v14.17.3/bin:/usr/local/bin:/usr/local/sbin:/usr/local/sbin:/Library/Frameworks/Python.framework/Versions/3.8/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/niordmac/Library/Android/sdk/platform-tools:/Users/niordmac/.yarn/bin:/Users/niordmac/.config/yarn/global/node_modules/.bin:/Users/niordmac/.nvm/versions/node/v14.17.3/bin:/usr/local/sbin:/Library/Frameworks/Python.framework/Versions/3.8/bin:/usr/local/mysql/bin:/Library/Maven/apache-maven-3.6.3/bin:/usr/local/mysql/bin:/usr/local/mysql/bin:/Library/Maven/apache-maven-3.6.3/bin
 
 Yarn version: 
-  1.22.19
+  1.22.5
 
 Node version: 
-  16.14.0
+  14.17.3
 
 Platform: 
-  darwin arm64
+  darwin x64
 
 Trace: 
-  Error: EACCES: permission denied, unlink '/Users/jasper/Drowsiness-detection-app/node_modules/expo-media-library/app.plugin.js'
+  Error: https://registry.yarnpkg.com/@tensorflow%2ftfjs-core,: Not found
+      at Request.params.callback [as _callback] (/Users/niordmac/.yarn/lib/cli.js:66988:18)
+      at Request.self.callback (/Users/niordmac/.yarn/lib/cli.js:140749:22)
+      at Request.emit (events.js:375:28)
+      at Request.<anonymous> (/Users/niordmac/.yarn/lib/cli.js:141721:10)
+      at Request.emit (events.js:375:28)
+      at IncomingMessage.<anonymous> (/Users/niordmac/.yarn/lib/cli.js:141643:12)
+      at Object.onceWrapper (events.js:481:28)
+      at IncomingMessage.emit (events.js:387:35)
+      at endReadableNT (internal/streams/readable.js:1317:12)
+      at processTicksAndRejections (internal/process/task_queues.js:82:21)
 
 npm manifest: 
   {
@@ -28,12 +38,15 @@ npm manifest:
       "web": "expo start --web"
     },
     "dependencies": {
+      "@mediapipe/face_detection": "^0.4.1646425229",
       "@react-native-async-storage/async-storage": "~1.17.3",
+      "@tensorflow-models/face-detection": "^1.0.1",
       "@tensorflow/tfjs": "3.18.0",
       "@tensorflow/tfjs-react-native": "0.8.0",
       "async-storage": "^0.1.0",
       "expo": "~46.0.2",
       "expo-camera": "^12.3.0",
+      "expo-face-detector": "^12.1.1",
       "expo-file-system": "^14.1.0",
       "expo-gl": "^11.4.0",
       "expo-gl-cpp": "^11.4.0",
@@ -41,7 +54,7 @@ npm manifest:
       "expo-status-bar": "~1.4.4",
       "react": "18.0.0",
       "react-native": "0.69.3",
-      "react-native-fs": "2.14.1"
+      "react-native-fs": "^2.20.0"
     },
     "devDependencies": {
       "@babel/core": "^7.20.0"
@@ -2589,6 +2602,11 @@ Lockfile:
     dependencies:
       dequal "^1.0.0"
   
+  "@mediapipe/face_detection@^0.4.1646425229":
+    version "0.4.1646425229"
+    resolved "https://registry.yarnpkg.com/@mediapipe/face_detection/-/face_detection-0.4.1646425229.tgz#76cd4b4938d5a641dfdad2951ff9f37dcf18e636"
+    integrity sha512-aeCN+fRAojv9ch3NXorP6r5tcGVLR3/gC1HmtqB0WEZBRXrdP6/3W/sGR0dHr1iT6ueiK95G9PVjbzFosf/hrg==
+  
   "@nodelib/fs.scandir@2.1.5":
     version "2.1.5"
     resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -2842,6 +2860,13 @@ Lockfile:
     version "2.0.0"
     resolved "https://registry.yarnpkg.com/@sideway/pinpoint/-/pinpoint-2.0.0.tgz#cff8ffadc372ad29fd3f78277aeb29e632cc70df"
     integrity sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==
+  
+  "@tensorflow-models/face-detection@^1.0.1":
+    version "1.0.1"
+    resolved "https://registry.yarnpkg.com/@tensorflow-models/face-detection/-/face-detection-1.0.1.tgz#f0b68f5c8ebf38d588ae2c9c6eb7517e7faad2b5"
+    integrity sha512-oIEEqHy4qbkGn5xT1ldzwxK5s948+t7ts0+WoIfTPKwScpNa8YY4GJf+fpyhtOxUGGAZymXx25jrvF9YlAt9dg==
+    dependencies:
+      rimraf "^3.0.2"
   
   "@tensorflow/tfjs-backend-cpu@3.18.0":
     version "3.18.0"
@@ -3375,7 +3400,7 @@ Lockfile:
   base-64@^0.1.0:
     version "0.1.0"
     resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
-    integrity sha1-eAqZyE59YAJgNhURxId2E78k9rs=
+    integrity sha512-Y5gU45svrR5tI2Vt/X9GPd3L0HNIKzGu202EjxrXMpuc2V2CiKgemAbUUsqYmZJvPtCXoUKjNZwBJzsNScUbXA==
   
   base64-js@^1.1.2, base64-js@^1.2.3, base64-js@^1.3.0, base64-js@^1.3.1, base64-js@^1.5.1:
     version "1.5.1"
@@ -4356,6 +4381,11 @@ Lockfile:
     version "3.2.0"
     resolved "https://registry.yarnpkg.com/expo-error-recovery/-/expo-error-recovery-3.2.0.tgz#3a4543382904a5e70829cb41d7fc0f022c2bef6e"
     integrity sha512-XZ630ks5HNxa9oc2Ya1hEn1ez031Cy4VnyxerPC2o9fKNKSrD/64cRqGF9NkGM3X2uf8+PCB9adxVflAIXBf6w==
+  
+  expo-face-detector@^12.1.1:
+    version "12.1.1"
+    resolved "https://registry.yarnpkg.com/expo-face-detector/-/expo-face-detector-12.1.1.tgz#3d39956303cebc056785ee8f52e57ab3ffd9913d"
+    integrity sha512-J5fm2oQcj7SQXyx4dQUKP0WC5uMeo/K9BLftVMBH6HYKICtG9ar0QBzDqLv4gYkDyrPJO1h6WwvLeqm76jiOuA==
   
   expo-file-system@^14.1.0, expo-file-system@~14.1.0:
     version "14.1.0"
@@ -6793,13 +6823,13 @@ Lockfile:
       jscodeshift "^0.13.1"
       nullthrows "^1.1.1"
   
-  react-native-fs@2.14.1:
-    version "2.14.1"
-    resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.14.1.tgz#61c70a865b5b5bcb020dd4e4befd60a2c20c836f"
-    integrity sha512-ZcfiwNP+FBgvv2eRk0B62/NI58mbjszjjYvQlP352HLkUqVsK4Ld6X8fdBO1lZAz6SgitUk8WEc9NEciRIt31g==
+  react-native-fs@^2.20.0:
+    version "2.20.0"
+    resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.20.0.tgz#05a9362b473bfc0910772c0acbb73a78dbc810f6"
+    integrity sha512-VkTBzs7fIDUiy/XajOSNk0XazFE9l+QlMAce7lGuebZcag5CnjszB+u4BdqzwaQOdcYb5wsJIsqq4kxInIRpJQ==
     dependencies:
       base-64 "^0.1.0"
-      utf8 "^2.1.1"
+      utf8 "^3.0.0"
   
   react-native-gradle-plugin@^0.0.7:
     version "0.0.7"
@@ -8019,10 +8049,10 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"
     integrity sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
   
-  utf8@^2.1.1:
-    version "2.1.2"
-    resolved "https://registry.yarnpkg.com/utf8/-/utf8-2.1.2.tgz#1fa0d9270e9be850d9b05027f63519bf46457d96"
-    integrity sha1-H6DZJw6b6FDZsFAn9jUZv0ZFfZY=
+  utf8@^3.0.0:
+    version "3.0.0"
+    resolved "https://registry.yarnpkg.com/utf8/-/utf8-3.0.0.tgz#f052eed1364d696e769ef058b183df88c87f69d1"
+    integrity sha512-E8VjFIQ/TyQgp+TZfS6l8yp/xWppSAHzidGiRrqe4bK4XP9pTRyKFgGJpO3SN7zdX4DeomTrwaseCHovfpFcqQ==
   
   util-deprecate@^1.0.1, util-deprecate@~1.0.1:
     version "1.0.2"

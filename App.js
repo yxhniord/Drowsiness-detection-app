@@ -1,5 +1,5 @@
 import { StyleSheet, View, Button, Text, Platform } from "react-native";
-import { Camera, CameraType } from "expo-camera";
+import { Camera } from "expo-camera";
 import React, { useEffect, useState, useRef } from "react";
 import * as tf from "@tensorflow/tfjs";
 import * as FaceDetector from "expo-face-detector";
@@ -7,18 +7,25 @@ import {
   bundleResourceIO,
   cameraWithTensors,
 } from "@tensorflow/tfjs-react-native";
-// import Home from "./screens/Home";
 
 const TensorCamera = cameraWithTensors(Camera);
 
 export default function App() {
+  let requestAnimationFrameId = 0;
+  const texture =
+    Platform.OS == "ios"
+      ? { height: 1920, width: 1080 }
+      : { height: 1200, width: 1600 };
+  const labels = ["yawn", "no_yawn", "Closed", "Open"];
+
   const [type, setType] = useState(Camera.Constants.Type.front);
   const cameraRef = useRef(null);
   const [model, setModel] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [drowsiness, setDrowsiness] = useState("None");
   const faceRef = useRef();
-
+  const [leftEyeOpenProbability, setLeftEyeOpenProbability] = useState();
+  const [rightEyeOpenProbability, setRightEyeOpenProbability] = useState();
 
   function argMax(arr) {
     if (arr.length === 0) {
@@ -38,8 +45,6 @@ export default function App() {
     return maxIndex;
   }
 
-  const labels = ["yawn", "no_yawn", "Closed", "Open"];
-
   useEffect(() => {
     (async () => {
       await Camera.requestCameraPermissionsAsync();
@@ -58,6 +63,13 @@ export default function App() {
     })();
   }, []);
 
+  // Run unMount for cancelling animation if it is running to avoid leaks
+  useEffect(() => {
+    return () => {
+      cancelAnimationFrame(requestAnimationFrameId);
+    };
+  }, [requestAnimationFrameId]);
+
   function handleFlip() {
     if (type === Camera.Constants.Type.front) {
       setType(Camera.Constants.Type.back);
@@ -66,8 +78,6 @@ export default function App() {
     }
   }
 
-  const texture = Platform.OS == "ios" ? { height: 1920, width: 1080 } : { height: 1200, width: 1600 };
-
   function handleCameraStream(images) {
     const loop = async () => {
       const nextImageTensor = images.next().value;
@@ -75,17 +85,22 @@ export default function App() {
         console.log("[LOADING ERROR] info: no model or image...");
         return;
       }
-      if (!faceRef.current || !faceRef.current.bounds || !faceRef.current.leftEyeOpenProbability) {
-        console.log('faceRef.current:', faceRef.current);
-        requestAnimationFrame(loop);
+      if (
+        !faceRef.current ||
+        !faceRef.current.bounds ||
+        !faceRef.current.leftEyeOpenProbability
+      ) {
+        // console.log("faceRef.current:", faceRef.current);
+        requestAnimationFrameId = requestAnimationFrame(loop);
         return;
       }
-      const { x, y } = faceRef.current.bounds.origin;
-      const { width, height } = faceRef.current.bounds.size;
-      const { leftEyeOpenProbability, rightEyeOpenProbability } = faceRef.current;
-      console.log('bounds: ', faceRef.current.bounds);
-      console.log('LeftEyeOpenProbability: ', faceRef.current.leftEyeOpenProbability);
-      console.log('RightEyeOpenProbability: ', faceRef.current.rightEyeOpenProbability);
+      // Detect eye open probability
+      setLeftEyeOpenProbability(faceRef.current.leftEyeOpenProbability);
+      setRightEyeOpenProbability(faceRef.current.rightEyeOpenProbability);
+
+      // Detect face
+      faceTensor = detectFace(nextImageTensor);
+
       model
         .predict(nextImageTensor.reshape([1, 145, 145, 3]))
         .data()
@@ -96,13 +111,17 @@ export default function App() {
         .catch((error) => {
           console.log("[LOADING ERROR] info:", error);
         });
-      requestAnimationFrame(loop);
+      requestAnimationFrameId = requestAnimationFrame(loop);
     };
     loop();
   }
 
+  function detectFace(imageTensor) {
+    return imageTensor;
+  }
+
   const handleFacesDetected = (faces) => {
-    const face=faces.faces[0];
+    const face = faces.faces[0];
     if (face) {
       faceRef.current = face ?? null;
     } else {
@@ -138,6 +157,8 @@ export default function App() {
         />
       )}
       <Text>Drowsiness: {drowsiness}</Text>
+      {leftEyeOpenProbability && <Text>Left: {leftEyeOpenProbability}</Text>}
+      {rightEyeOpenProbability && <Text>Right: {rightEyeOpenProbability}</Text>}
       <Button onPress={handleFlip} title="flip" />
     </View>
   );
