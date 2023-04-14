@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "~1.17.3",
+    "@teachablemachine/image": "^0.8.5",
     "@tensorflow/tfjs": "3.18.0",
     "@tensorflow/tfjs-react-native": "0.8.0",
     "async-storage": "^0.1.0",
@@ -21,7 +22,8 @@
     "expo-status-bar": "~1.4.4",
     "react": "18.0.0",
     "react-native": "0.69.3",
-    "react-native-fs": "2.14.1"
+    "react-native-fs": "2.14.1",
+    "react-native-webview": "^12.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
