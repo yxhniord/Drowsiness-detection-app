@@ -16,6 +16,8 @@ const TensorCamera = cameraWithTensors(Camera);
 const CAM_PREVIEW_WIDTH = 270;
 const CAM_PREVIEW_HEIGHT = 480;
 
+const CROP_HEIGHT = 224;
+const CROP_WIDTH = 224;
 // The size of the output tensor (image) from TensorCamera.
 //
 // 9/16.
@@ -155,6 +157,7 @@ export default function App() {
   } else {
     return (
       <View style={styles.container}>
+              <View style={styles.cropContainer}>
         <TensorCamera
           style={styles.camera}
           autorender={true}
@@ -166,6 +169,8 @@ export default function App() {
           resizeDepth={3}
           onReady={handleCameraStream}
         />
+        </View>
+        <View style={styles.cropOverlay} />
         <View
           style={
             isYawning
@@ -189,11 +194,30 @@ const styles = StyleSheet.create({
     height: CAM_PREVIEW_HEIGHT,
     marginTop: Dimensions.get('window').height / 2 - CAM_PREVIEW_HEIGHT / 2,
   },
-  // Tensor camera requires z-index.
+  cropContainer: {
+    width: CAM_PREVIEW_WIDTH,
+    height: CAM_PREVIEW_HEIGHT,
+    overflow: 'hidden',
+    alignSelf: 'center',
+  },
   camera: {
-    width: '100%',
-    height: '100%',
+    width: CAM_PREVIEW_WIDTH,
+    height: CAM_PREVIEW_HEIGHT,
     zIndex: 1,
+  },
+  cropOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: CAM_PREVIEW_WIDTH,
+    height: CAM_PREVIEW_HEIGHT,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 2,
+    borderTopWidth: (CAM_PREVIEW_HEIGHT - CROP_HEIGHT) / 2,
+    borderBottomWidth: (CAM_PREVIEW_HEIGHT - CROP_HEIGHT) / 2,
+    borderLeftWidth: (CAM_PREVIEW_WIDTH - CROP_WIDTH) / 2,
+    borderRightWidth: (CAM_PREVIEW_WIDTH - CROP_WIDTH) / 2,
+    borderColor: 'rgba(0, 0, 0, 0.5)',
   },
   loadingMsg: {
     position: 'absolute',
