@@ -99,7 +99,12 @@ export default function App() {
       setRightEyeOpenProbability(faceRef.current.rightEyeOpenProbability);
 
       // Detect face
-      faceTensor = detectFace(nextImageTensor);
+      const { x, y } = faceRef.current.bounds.origin;
+      const { width, height } = faceRef.current.bounds.size;
+      console.log("x: ", x);
+      console.log("y: ", y);
+      console.log("width: ", width);
+      console.log("height: ", height);
 
       model
         .predict(nextImageTensor.reshape([1, 145, 145, 3]))
@@ -116,11 +121,8 @@ export default function App() {
     loop();
   }
 
-  function detectFace(imageTensor) {
-    return imageTensor;
-  }
-
   const handleFacesDetected = (faces) => {
+    // console.log("faces: ", faces);
     const face = faces.faces[0];
     if (face) {
       faceRef.current = face ?? null;
