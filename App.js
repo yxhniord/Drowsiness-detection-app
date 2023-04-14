@@ -16,8 +16,8 @@ const TensorCamera = cameraWithTensors(Camera);
 const CAM_PREVIEW_WIDTH = 270;
 const CAM_PREVIEW_HEIGHT = 480;
 
-const CROP_HEIGHT = 224;
-const CROP_WIDTH = 224;
+const CROP_HEIGHT = 200;
+const CROP_WIDTH = 200;
 // The size of the output tensor (image) from TensorCamera.
 //
 // 9/16.
